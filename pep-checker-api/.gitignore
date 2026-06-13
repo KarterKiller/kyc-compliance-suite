@@ -46,6 +46,19 @@ target/
 .DS_Store
 velocity.log
 
+# Sensitive.
+*/dev.properties
+.env
+
+# Build
+*/target/
+*/node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
 # Sensitive
 */dev.properties
 .env
