@@ -1,0 +1,131 @@
+<template>
+  <div class="form-container" data-theme="light">
+    <!-- Dark Mode Toggle -->
+    <div class="theme-toggle-wrapper">
+      <button class="theme-toggle" onclick={toggleDarkMode} title="Toggle dark mode">
+        <span class="toggle-icon" data-light="☀️" data-dark="🌙"></span>
+      </button>
+    </div>
+
+    <!-- Header -->
+    <div class="form-header">
+      <h1 class="form-title">Create KYC</h1>
+      <p class="form-subtitle">Know Your Customer Form</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card">
+      <!-- Client Info Section -->
+      <div class="form-section">
+        <h2 class="section-heading">Client Information</h2>
+        
+        <lightning-input
+          label="Client Name"
+          placeholder="Enter full name"
+          value={kycRecord.Client_Name__c}
+          onchange={handleInputChange}
+          data-field="Client_Name__c"
+          class="form-input">
+        </lightning-input>
+
+        <lightning-input
+          type="email"
+          label="Client Email"
+          placeholder="name@example.com"
+          value={kycRecord.Client_Email__c}
+          onchange={handleInputChange}
+          data-field="Client_Email__c"
+          class="form-input">
+        </lightning-input>
+      </div>
+
+      <!-- Documents Section -->
+      <div class="form-section">
+        <h2 class="section-heading">Documents</h2>
+        
+        <div class="upload-group">
+          <label class="upload-label">ID Document</label>
+          <div class="upload-area">
+            <lightning-input
+              type="file"
+              accept=".pdf,.jpg,.png"
+              onchange={handleFileUpload}
+              data-file-type="ID_Document"
+              class="file-input">
+            </lightning-input>
+            <span class="upload-hint">PDF, JPG, or PNG</span>
+          </div>
+        </div>
+
+        <div class="upload-group">
+          <label class="upload-label">Proof of Address</label>
+          <div class="upload-area">
+            <lightning-input
+              type="file"
+              accept=".pdf,.jpg,.png"
+              onchange={handleFileUpload}
+              data-file-type="Proof_of_Address"
+              class="file-input">
+            </lightning-input>
+            <span class="upload-hint">PDF, JPG, or PNG</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PEP Status Badge -->
+      <div class="form-section">
+        <h2 class="section-heading">Compliance Check</h2>
+        <div class="pep-badge" data-status={kycRecord.PEP_Status__c}>
+          <span class="badge-icon">
+            <template if:true={isPEP}>🚩</template>
+            <template if:false={isPEP}>✅</template>
+          </span>
+          <span class="badge-text">{pepStatusLabel}</span>
+        </div>
+      </div>
+
+      <!-- Status & Risk Score -->
+      <div class="form-section">
+        <h2 class="section-heading">Assessment</h2>
+        
+        <div class="form-row">
+          <lightning-combobox
+            label="Status"
+            value={kycRecord.Status__c}
+            options={statusOptions}
+            onchange={handleStatusChange}
+            class="form-input">
+          </lightning-combobox>
+
+          <div class="risk-score-box">
+            <span class="risk-label">Risk Score</span>
+            <span class="risk-number">{kycRecord.Risk_Score__c}%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="form-actions">
+        <lightning-button 
+  variant="brand" 
+  label="Save" 
+  onclick={handleSaveKYC}
+  class="btn-primary">
+</lightning-button>
+        <lightning-button 
+          variant="neutral" 
+          label="Cancel" 
+          onclick={handleCancel}
+          class="btn-secondary">
+        </lightning-button>
+      </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <lightning-spinner 
+      alternative-text="Loading" 
+      if:true={isLoading}
+      class="spinner">
+    </lightning-spinner>
+  </div>
+</template>

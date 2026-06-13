@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+<configuration-properties file="dev.properties"/>
+    <!-- HTTP Listener Config -->
+    <http:listener-config name="HTTP_Listener_config">
+        <http:listener-connection host="0.0.0.0" port="8081"/>
+    </http:listener-config>
+
+    <!-- HTTP Request Config - OpenSanctions API -->
+    <http:request-config name="OpenSanctions_HTTP_Request_config">
+        <http:request-connection 
+            host="api.opensanctions.org" 
+            port="443" 
+            protocol="HTTPS"/>
+    </http:request-config>
+
+    <!-- PEP Checker Flow -->
+    <flow name="pep-checker-apiFlow">
+
+        <!-- Endpoint: /pep-check?name=Vladimir Putin -->
+        <http:listener 
+            doc:name="Listen on /pep-check"
+            config-ref="HTTP_Listener_config"
+            path="/pep-check"
+            allowedMethods="GET"/>
+
+        <!-- Get name from query param -->
+        <set-variable 
+            doc:name="Set clientName"
+            variableName="clientName"
+            value="#[attributes.queryParams.name default '']"/>
+
+        <!-- Call OpenSanctions API -->
+       <http:request
+            doc:name="Call OpenSanctions API"
+            config-ref="OpenSanctions_HTTP_Request_config"
+            method="GET"
+            path="/search/default"
+            responseTimeout="5000">
+            <http:headers><![CDATA[
+#[{
+    'Authorization': 'ApiKey ' ++ p('opensanctions.api.key')
+}]
+            ]]></http:headers>
+            <http:query-params><![CDATA[
+#[{
+    q: vars.clientName
+}]
+            ]]></http:query-params>
+        </http:request>
+
+        <!-- Transform API response -->
+        <ee:transform doc:name="Transform Response">
+            <ee:message>
+                <ee:set-payload><![CDATA[
+%dw 2.0
+output application/json
+var results = payload.results default []
+var exactMatches = results filter ((item) ->
+    lower(item.caption default "") == lower(vars.clientName)
+)
+---
+{
+    clientName: vars.clientName,
+    isPEP: sizeOf(exactMatches) > 0,
+    riskLevel: if (sizeOf(exactMatches) > 0) "HIGH" else "LOW",
+    results: exactMatches,
+    timestamp: now()
+}
+                ]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+
+    </flow>
+
+</mule>

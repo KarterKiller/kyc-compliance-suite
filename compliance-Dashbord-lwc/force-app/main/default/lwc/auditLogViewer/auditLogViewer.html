@@ -1,0 +1,43 @@
+<template>
+  <div class="audit-container">
+    <h2 class="audit-title">Audit Trail</h2>
+
+    <div class="audit-table-wrapper">
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>User</th>
+            <th>Action</th>
+            <th>KYC Client</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <template for:each={auditLogs} for:item="log">
+            <tr key={log.Id} class="audit-row">
+              <td class="cell-time">{log.Timestamp__c}</td>
+              <td class="cell-user">{log.userName}</td>
+              <td class="cell-action">
+                <span class="action-badge" data-action={log.Action__c}>
+                  {log.Action__c}
+                </span>
+              </td>
+              <td class="cell-kyc">{log.clientName}</td>
+              <td class="cell-details">
+                <span class="detail-text">{log.details}</span>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+
+    <template if:false={auditLogs.length}>
+      <div class="empty-state">
+        <p>No audit logs yet</p>
+      </div>
+    </template>
+  </div>
+</template>

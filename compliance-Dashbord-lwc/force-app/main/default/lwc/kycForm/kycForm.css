@@ -1,0 +1,543 @@
+/* ============================================
+   VARIABLES
+   ============================================ */
+
+.form-container {
+  /* Light Mode */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f7;
+  --bg-tertiary: #efefef;
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --border-color: #e5e5e7;
+  --accent-primary: #0071e3;
+  --accent-secondary: #34c759;
+  --accent-warning: #ff9500;
+  --accent-danger: #ff3b30;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  
+  /* Transitions */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.16);
+}
+
+/* Dark Mode */
+.form-container[data-theme="dark"] {
+  --bg-primary: #1d1d1f;
+  --bg-secondary: #272729;
+  --bg-tertiary: #424245;
+  --text-primary: #f5f5f7;
+  --text-secondary: #a1a1a6;
+  --border-color: #424245;
+  --glass-bg: rgba(45, 45, 50, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   GLOBAL
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.form-container {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding: var(--spacing-xl);
+  transition: background var(--transition-slow), color var(--transition-slow);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+/* ============================================
+   THEME TOGGLE
+   ============================================ */
+
+.theme-toggle-wrapper {
+  position: fixed;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  z-index: 1000;
+}
+
+.theme-toggle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-md);
+}
+
+.theme-toggle:hover {
+  background: rgba(0, 113, 227, 0.1);
+  transform: scale(1.05);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.form-header {
+  margin-bottom: var(--spacing-xl);
+  animation: slideDown 0.6s ease-out;
+}
+
+.form-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.form-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ============================================
+   FORM CARD
+   ============================================ */
+
+.form-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: var(--shadow-md);
+  animation: slideUp 0.6s ease-out 0.2s backwards;
+}
+
+/* ============================================
+   FORM SECTIONS
+   ============================================ */
+
+.form-section {
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-xl);
+  border-bottom: 1px solid var(--border-color);
+  animation: slideUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.form-section:nth-child(1) { animation-delay: 0.3s; }
+.form-section:nth-child(2) { animation-delay: 0.4s; }
+.form-section:nth-child(3) { animation-delay: 0.5s; }
+.form-section:nth-child(4) { animation-delay: 0.6s; }
+.form-section:last-child { border-bottom: none; }
+
+.section-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.875rem;
+}
+
+/* ============================================
+   FORM INPUTS
+   ============================================ */
+
+.form-input {
+  margin-bottom: var(--spacing-md);
+  transition: all var(--transition-normal);
+}
+
+.form-input:last-child {
+  margin-bottom: 0;
+}
+
+.form-input:hover,
+.form-input:focus-within {
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   UPLOAD AREA
+   ============================================ */
+
+.upload-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.upload-label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  font-size: 0.875rem;
+}
+
+.upload-area {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  text-align: center;
+  transition: all var(--transition-normal);
+  background: var(--bg-secondary);
+  cursor: pointer;
+}
+
+.upload-area:hover {
+  border-color: var(--accent-primary);
+  background: rgba(0, 113, 227, 0.05);
+}
+
+.file-input {
+  width: 100%;
+}
+
+.upload-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: var(--spacing-sm);
+}
+
+/* ============================================
+   PEP BADGE
+   ============================================ */
+
+.pep-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  animation: slideIn 0.4s ease-out;
+}
+
+.pep-badge[data-status="PEP"] {
+  background: rgba(255, 59, 48, 0.1);
+  border-color: var(--accent-danger);
+}
+
+.pep-badge[data-status="Not PEP"] {
+  background: rgba(52, 199, 89, 0.1);
+  border-color: var(--accent-secondary);
+}
+
+.badge-icon {
+  font-size: 1.5rem;
+}
+
+.badge-text {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ============================================
+   FORM ROW (multi-column)
+   ============================================ */
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 150px;
+  gap: var(--spacing-lg);
+  align-items: end;
+}
+
+.risk-score-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  text-align: center;
+}
+
+.risk-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+}
+
+.risk-number {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+/* ============================================
+   ACTION BUTTONS
+   ============================================ */
+
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+  animation: slideUp 0.6s ease-out 0.7s backwards;
+}
+
+.btn-primary,
+.btn-secondary {
+  flex: 1;
+  transition: all var(--transition-normal);
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-tertiary);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ============================================
+   SPINNER
+   ============================================ */
+
+.spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3000;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .form-container {
+    padding: var(--spacing-lg);
+  }
+
+  .form-title {
+    font-size: 1.75rem;
+  }
+
+  .form-card {
+    padding: var(--spacing-lg);
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .theme-toggle-wrapper {
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+  }
+}
+
+/* ============================================
+   LIGHTNING BUTTON OVERRIDE
+   ============================================ */
+
+lightning-button {
+  --slds-c-button-neutral-color-background: var(--bg-secondary);
+  --slds-c-button-neutral-color-border: var(--border-color);
+  --slds-c-button-neutral-text-color: var(--text-primary);
+  --slds-c-button-brand-color-background: var(--accent-primary);
+  --slds-c-button-brand-text-color: #ffffff;
+}
+
+/* Brand Button (Primary) */
+lightning-button[variant="brand"] ::part(button) {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #005fb3 100%);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  padding: 10px 24px;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
+  cursor: pointer;
+}
+
+lightning-button[variant="brand"] ::part(button):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 113, 227, 0.4);
+  background: linear-gradient(135deg, #0066dd 0%, #0052a3 100%);
+}
+
+lightning-button[variant="brand"] ::part(button):active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3);
+}
+
+/* Neutral Button (Secondary) */
+lightning-button[variant="neutral"] ::part(button) {
+  background: var(--glass-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  padding: 10px 24px;
+  color: var(--text-primary);
+  transition: all var(--transition-normal);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+lightning-button[variant="neutral"] ::part(button):hover {
+  background: var(--bg-secondary);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+lightning-button[variant="neutral"] ::part(button):active {
+  transform: translateY(0);
+}
+
+/* Button Wrapper Animations */
+.btn-primary,
+.btn-secondary {
+  display: block;
+  animation: slideUp 0.6s ease-out 0.7s backwards;
+}
+
+.btn-primary:active ::part(button),
+.btn-secondary:active ::part(button) {
+  transform: scale(0.98);
+}
+
+/* Styled form actions wrapper */
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+  animation: slideUp 0.6s ease-out 0.7s backwards;
+}
+
+.btn-primary,
+.btn-secondary {
+  flex: 1;
+  transition: all var(--transition-normal);
+}
+
+.btn-primary:hover {
+  filter: brightness(0.95);
+  transform: translateY(-2px);
+}
+
+.btn-secondary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   DROPDOWN FIX (Aggressive)
+   ============================================ */
+
+/* Remove overflow hidden from form-section */
+.form-section {
+  overflow: visible !important;
+}
+
+/* Elevate dropdown */
+lightning-combobox {
+  position: relative;
+  z-index: 1000 !important;
+}
+
+lightning-combobox::part(combobox) {
+  z-index: 1000 !important;
+}
+
+/* Add space below for dropdown */
+.form-row {
+  margin-bottom: 200px; /* ← Beaucoup d'espace pour le dropdown */
+}
+
+/* Ensure form-card doesn't clip dropdown */
+.form-card {
+  overflow: visible !important;
+}
+

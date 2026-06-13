@@ -1,0 +1,35 @@
+<template>
+  <div class="heatmap-container">
+    <h2 class="heatmap-title">Risk Heatmap</h2>
+    
+    <div class="heatmap-grid">
+      <template for:each={kycList} for:item="kyc">
+        <div key={kyc.Id} class="risk-card" data-risk={kyc.Risk_Score__c}>
+          <div class="risk-circle">
+            <span class="risk-value">{kyc.Risk_Score__c}%</span>
+          </div>
+          <div class="risk-info">
+            <p class="risk-name">{kyc.Client_Name__c}</p>
+            <p class="risk-status">{kyc.Status__c}</p>
+            <p class="risk-pep" data-pep={kyc.PEP_Status__c}>{kyc.PEP_Status__c}</p>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item">
+        <span class="legend-color" style="background: #34C759;"></span>
+        <span>Low Risk (0-40)</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #FF9500;"></span>
+        <span>Medium Risk (40-75)</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #FF3B30;"></span>
+        <span>High Risk (75+)</span>
+      </div>
+    </div>
+  </div>
+</template>

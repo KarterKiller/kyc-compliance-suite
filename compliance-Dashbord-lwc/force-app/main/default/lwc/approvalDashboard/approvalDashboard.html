@@ -1,0 +1,215 @@
+<template>
+  <div class="dashboard-container" data-theme="light">
+    <!-- Dark Mode Toggle -->
+    <div class="theme-toggle-wrapper">
+      <button class="theme-toggle" onclick={toggleDarkMode} title="Toggle dark mode">
+        <span class="toggle-icon" data-light="☀️" data-dark="🌙"></span>
+      </button>
+    </div>
+
+    <!-- Header -->
+    <div class="dashboard-header">
+      <div class="header-content">
+        <h1 class="dashboard-title">Compliance Dashboard</h1>
+        <p class="dashboard-subtitle">KYC Management & Risk Assessment</p>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="stats-grid">
+      <div class="stat-card stat-card-total">
+        <div class="stat-icon">📊</div>
+        <div class="stat-content">
+          <p class="stat-label">Total KYC</p>
+          <p class="stat-number">{totalKYC}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card-review">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-content">
+          <p class="stat-label">In Review</p>
+          <p class="stat-number">{kycInReview}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card-approved">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <p class="stat-label">Approved</p>
+          <p class="stat-number">{kycApproved}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card-risk">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-content">
+          <p class="stat-label">High Risk</p>
+          <p class="stat-number">{kycHighRisk}</p>
+        </div>
+      </div>
+    </div>
+
+<!-- Risk Heatmap Section -->
+<div class="heatmap-wrapper">
+  <c-risk-heatmap></c-risk-heatmap>
+</div>
+
+<!-- KYC Records Section -->
+<div class="records-section">
+  ...
+</div>
+
+<!-- Audit Log Viewer Section -->
+<div class="audit-wrapper">
+  <c-audit-log-viewer></c-audit-log-viewer>
+</div>
+
+    <!-- KYC Records Section -->
+<div class="records-section">
+  <div class="section-header">
+    <h2 class="section-title">KYC Records</h2>
+    <div class="section-controls">
+      <lightning-button 
+        variant="neutral" 
+        label="Refresh" 
+        onclick={refreshData}
+        class="refresh-btn">
+      </lightning-button>
+    </div>
+  </div>
+
+  <!-- Custom Table -->
+  <div class="table-wrapper">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Client Name</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Risk Score</th>
+          <th>PEP Status</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template for:each={kycList} for:item="kyc">
+          <tr key={kyc.Id} class="table-row">
+            <td class="cell-name">{kyc.Client_Name__c}</td>
+            <td class="cell-email">
+              <a href="mailto:{kyc.Client_Email__c}" class="email-link">
+                {kyc.Client_Email__c}
+              </a>
+            </td>
+            <td class="cell-status">
+              <span class="status-badge" data-status={kyc.Status__c}>
+                {kyc.Status__c}
+              </span>
+            </td>
+            <td class="cell-risk">
+              <span class="risk-indicator" data-risk={kyc.Risk_Score__c}>
+                {kyc.Risk_Score__c}%
+              </span>
+            </td>
+            <td class="cell-pep">
+              <span class="pep-badge" data-pep={kyc.PEP_Status__c}>
+                {kyc.PEP_Status__c}
+              </span>
+            </td>
+            <td class="cell-created">{kyc.CreatedDate}</td>
+            <td class="cell-actions">
+              <div class="action-buttons">
+                <button 
+                  class="action-btn action-view" 
+                  onclick={handleRowAction} 
+                  data-action="view"
+                  data-kyc-id={kyc.Id}
+                  title="View details">
+                  👁️
+                </button>
+                <button 
+                  class="action-btn action-approve" 
+                  onclick={handleRowAction} 
+                  data-action="approve"
+                  data-kyc-id={kyc.Id}
+                  title="Approve">
+                  ✅
+                </button>
+                <button 
+                  class="action-btn action-reject" 
+                  onclick={handleRowAction} 
+                  data-action="reject"
+                  data-kyc-id={kyc.Id}
+                  title="Reject">
+                  ❌
+                </button>
+              </div>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Empty State -->
+  <template if:false={kycList.length}>
+    <div class="empty-state">
+      <p class="empty-state-text">No KYC records yet. Create one to get started.</p>
+    </div>
+  </template>
+</div>
+
+<!-- Modal (reste identique) -->
+<template if:true={showModal}>
+  ...
+</template>
+
+    <!-- Modal -->
+    <template if:true={showModal}>
+      <div class="modal-overlay" onclick={closeModal}>
+        <div class="modal-content" onclick={handleModalContentClick}>
+          <div class="modal-header">
+            <h2 class="modal-title">KYC Details</h2>
+            <button class="modal-close" onclick={closeModal}>✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="detail-row">
+              <span class="detail-label">Client Name</span>
+              <span class="detail-value">{selectedKYC.Client_Name__c}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Email</span>
+              <span class="detail-value">{selectedKYC.Client_Email__c}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Status</span>
+              <span class="detail-value detail-badge" data-status={selectedKYC.Status__c}>{selectedKYC.Status__c}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Risk Score</span>
+              <span class="detail-value">{selectedKYC.Risk_Score__c}%</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">PEP Status</span>
+              <span class="detail-value detail-badge" data-pep={selectedKYC.PEP_Status__c}>{selectedKYC.PEP_Status__c}</span>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <lightning-button 
+              variant="brand" 
+              label="Close" 
+              onclick={closeModal}>
+            </lightning-button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <lightning-spinner 
+      alternative-text="Loading" 
+      if:true={isLoading}
+      class="spinner">
+    </lightning-spinner>
+  </div>
+</template>
